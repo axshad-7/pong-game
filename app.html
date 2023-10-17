@@ -1,340 +1,373 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Pong Game</title>
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-image: url('./pong.jpg'); /* Add your background image URL here */
-            background-size: cover;
-            background-repeat: no-repeat;
-        }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-image: url("./pong.jpg"); /* Add your background image URL here */
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
 
-        #game-container {
-            position: relative;
-        }
+      #game-container {
+        position: relative;
+      }
 
-        canvas {
-            border: 2px solid white;
-        }
+      canvas {
+        border: 2px solid white;
+      }
 
-        #game-over-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            
-        }
+      #game-over-container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
 
-        #game-over-text {
-            font-size: 30px;
-            margin-bottom: 10px;
-            color: #fff;
-        }
+      #game-over-text {
+        font-size: 30px;
+        margin-bottom: 10px;
+        color: #fff;
+      }
 
-        #new-game-button {
-            padding: 10px 20px;
-            background-color: #0095DD;
-            color: #fff;
-            cursor: pointer;
-            border-radius: 25px;
-        }
-       
+      #new-game-button {
+        padding: 10px 20px;
+        background-color: #0095dd;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 25px;
+      }
 
-        #score-container {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 18px;
-            color: #fff;
-            font-family: sans-serif;
-        }
+      #score-container {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 18px;
+        color: #fff;
+        font-family: sans-serif;
+      }
 
-        #level-up-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 36px;
-            color: #0095DD;
-            display: none;
-        }
+      #level-up-message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 36px;
+        color: #0095dd;
+        display: none;
+      }
 
-        #high-score-container {
-            color: #fff;
-            top: 10px;
-            right: 10px;
-            font-size: 18px;
-            padding:10px 20px;
-            font-family: sans-serif;
-        }
+      #high-score-container {
+        color: #fff;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+        padding: 10px 20px;
+        font-family: sans-serif;
+      }
 
-        #background-video {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0.3;
-        }
+      #background-video {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0.3;
+      }
 
-        #pause-resume-buttons {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            font-size: 30px;
-        }
+      #pause-resume-buttons {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        font-size: 30px;
+      }
 
-        #pause-button,
-        #resume-button {
-            padding: 1px;
-            margin-left: 10px;
-            /* background-color: grey; */
-            color: #fff;
-            cursor: pointer;
-            border-radius: 10px;
-            
-        }
+      #pause-button,
+      #resume-button {
+        padding: 1px;
+        margin-left: 10px;
+        /* background-color: grey; */
+        color: #fff;
+        cursor: pointer;
+        border-radius: 10px;
+      }
 
-        #pause-button:hover,
-        #resume-button:hover {
-            background-color: #0075AD;
-            
-        }
+      #pause-button:hover,
+      #resume-button:hover {
+        background-color: #0075ad;
+      }
+
+      #footer {
+        text-align: center;
+        background-color: none;
+        color: gray;
+        padding: 10px;
+        width: 100%; /* Set the width to 100% */
+        position: fixed; /* Fixed position for the footer */
+font-family: sans-serif;
+        bottom: 0; /* Position at the bottom of the page */
+      }
+      #footer span {
+        font-size: 14px;
+        /* font-weight: bold; */
+        text-transform: uppercase;
+        color: blue;
+        text-align: center;
+      }
+      #footer span:hover{
+        color:rgb(62, 62, 251);
+      }
+      /* Style for the content container */
+      #content-container {
+        padding-bottom: 0px; /* Adjust for the height of the footer */
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="game-container">
-        <video id="background-video" autoplay muted loop>
-            <source src="background.mp4" type="video/mp4"> <!-- Add your background video URL here -->
-        </video>
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
-        <div id="score-container">Level: 1 Score: 0</div>
-        <div id="game-over-container">
-            <div id="game-over-text">Game Over</div>
-            <div id="high-score-container">High Score: <span id="high-score">0</span></div>
-            <button id="new-game-button">Start a New Game</button>
+      <video id="background-video" autoplay muted loop>
+        <source src="background.mp4" type="video/mp4" />
+        <!-- Add your background video URL here -->
+      </video>
+      <canvas id="gameCanvas" width="800" height="600"></canvas>
+      <div id="score-container">Level: 1 Score: 0</div>
+      <div id="game-over-container">
+        <div id="game-over-text">Game Over</div>
+        <div id="high-score-container">
+          High Score: <span id="high-score">0</span>
         </div>
-        <div id="level-up-message">Level Up!</div>
-        <div id="pause-resume-buttons">
-            <div id="pause-button">⏸</div>
-            <div id="resume-button">▶️</div>
-        </div>
+        <button id="new-game-button">Start a New Game</button>
+      </div>
+      <div id="level-up-message">Level Up!</div>
+      <div id="pause-resume-buttons">
+        <div id="pause-button">⏸</div>
+        <div id="resume-button">▶️</div>
+      </div>
     </div>
     <script>
-        const canvas = document.getElementById("gameCanvas");
-        const context = canvas.getContext("2d");
-        const ballRadius = 10;
-        let x = canvas.width / 2;
-        let y = canvas.height - 30;
-        let dx = 4; // Increased ball speed
-        let dy = -4; // Increased ball speed
+      const canvas = document.getElementById("gameCanvas");
+      const context = canvas.getContext("2d");
+      const ballRadius = 10;
+      let x = canvas.width / 2;
+      let y = canvas.height - 30;
+      let dx = 4; // Increased ball speed
+      let dy = -4; // Increased ball speed
 
-        const paddleHeight = 10;
-        const paddleWidth = 100;
-        let paddleX = (canvas.width - paddleWidth) / 2;
+      const paddleHeight = 10;
+      const paddleWidth = 100;
+      let paddleX = (canvas.width - paddleWidth) / 2;
 
-        let rightPressed = false;
-        let leftPressed = false;
-        let gamePaused = false;
+      let rightPressed = false;
+      let leftPressed = false;
+      let gamePaused = false;
 
-        let score = 0;
-        let level = 1;
-        const levelThresholds = [0, 10, 20, 30, 40,50];
-        const maxLevels = 5;
-        let ballTouchBottom = false;
-        let levelUpDisplayTimeout;
+      let score = 0;
+      let level = 1;
+      const levelThresholds = [0, 10, 20, 30, 40, 50];
+      const maxLevels = 5;
+      let ballTouchBottom = false;
+      let levelUpDisplayTimeout;
 
-        const gameOverContainer = document.getElementById("game-over-container");
-        const gameOverText = document.getElementById("game-over-text");
-        const newGameButton = document.getElementById("new-game-button");
-        const scoreContainer = document.getElementById("score-container");
-        const levelUpMessage = document.getElementById("level-up-message");
-        const highScoreContainer = document.getElementById("high-score-container");
-        const highScoreElement = document.getElementById("high-score");
-        const pauseButton = document.getElementById("pause-button");
-        const resumeButton = document.getElementById("resume-button");
+      const gameOverContainer = document.getElementById("game-over-container");
+      const gameOverText = document.getElementById("game-over-text");
+      const newGameButton = document.getElementById("new-game-button");
+      const scoreContainer = document.getElementById("score-container");
+      const levelUpMessage = document.getElementById("level-up-message");
+      const highScoreContainer = document.getElementById(
+        "high-score-container"
+      );
+      const highScoreElement = document.getElementById("high-score");
+      const pauseButton = document.getElementById("pause-button");
+      const resumeButton = document.getElementById("resume-button");
 
-        // Load high score from local storage
-        let highScore = parseInt(localStorage.getItem("highScore")) || 0;
-        highScoreElement.innerText = highScore;
+      // Load high score from local storage
+      let highScore = parseInt(localStorage.getItem("highScore")) || 0;
+      highScoreElement.innerText = highScore;
 
-        document.addEventListener("keydown", keyDownHandler);
-        document.addEventListener("keyup", keyUpHandler);
-        pauseButton.addEventListener("click", pauseGame);
-        resumeButton.addEventListener("click", resumeGame);
+      document.addEventListener("keydown", keyDownHandler);
+      document.addEventListener("keyup", keyUpHandler);
+      pauseButton.addEventListener("click", pauseGame);
+      resumeButton.addEventListener("click", resumeGame);
 
-        canvas.addEventListener("touchstart", touchStartHandler);
-        canvas.addEventListener("touchmove", touchMoveHandler);
+      canvas.addEventListener("touchstart", touchStartHandler);
+      canvas.addEventListener("touchmove", touchMoveHandler);
 
-        function keyDownHandler(e) {
-            if (!gamePaused) {
-                if (e.key == "Right" || e.key == "ArrowRight") {
-                    rightPressed = true;
-                } else if (e.key == "Left" || e.key == "ArrowLeft") {
-                    leftPressed = true;
-                }
-            }
+      function keyDownHandler(e) {
+        if (!gamePaused) {
+          if (e.key == "Right" || e.key == "ArrowRight") {
+            rightPressed = true;
+          } else if (e.key == "Left" || e.key == "ArrowLeft") {
+            leftPressed = true;
+          }
         }
+      }
 
-        function keyUpHandler(e) {
-            if (!gamePaused) {
-                if (e.key == "Right" || e.key == "ArrowRight") {
-                    rightPressed = false;
-                } else if (e.key == "Left" || e.key == "ArrowLeft") {
-                    leftPressed = false;
-                }
-            }
+      function keyUpHandler(e) {
+        if (!gamePaused) {
+          if (e.key == "Right" || e.key == "ArrowRight") {
+            rightPressed = false;
+          } else if (e.key == "Left" || e.key == "ArrowLeft") {
+            leftPressed = false;
+          }
         }
+      }
 
-        function touchStartHandler(e) {
-            e.preventDefault();
-            const touchX = e.touches[0].clientX;
-            const canvasRect = canvas.getBoundingClientRect();
-            if (touchX < canvasRect.left + canvas.width / 2) {
-                leftPressed = true;
-                rightPressed = false;
+      function touchStartHandler(e) {
+        e.preventDefault();
+        const touchX = e.touches[0].clientX;
+        const canvasRect = canvas.getBoundingClientRect();
+        if (touchX < canvasRect.left + canvas.width / 2) {
+          leftPressed = true;
+          rightPressed = false;
+        } else {
+          rightPressed = true;
+          leftPressed = false;
+        }
+      }
+
+      function touchMoveHandler(e) {
+        e.preventDefault();
+        const touchX = e.touches[0].clientX;
+        const canvasRect = canvas.getBoundingClientRect();
+        if (touchX < canvasRect.left + canvas.width / 2) {
+          leftPressed = true;
+          rightPressed = false;
+        } else {
+          rightPressed = true;
+          leftPressed = false;
+        }
+      }
+
+      function drawBall() {
+        context.beginPath();
+        context.arc(x, y, ballRadius, 0, Math.PI * 2);
+        context.fillStyle = "#0095DD";
+        context.fill();
+        context.closePath();
+      }
+
+      function drawPaddle() {
+        context.beginPath();
+        context.rect(
+          paddleX,
+          canvas.height - paddleHeight,
+          paddleWidth,
+          paddleHeight
+        );
+        context.fillStyle = "#0095DD";
+        context.fill();
+        context.closePath();
+      }
+
+      function draw() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        drawBall();
+        drawPaddle();
+
+        if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+          dx = -dx;
+        }
+        if (y + dy < ballRadius) {
+          dy = -dy;
+        } else if (y + dy > canvas.height - ballRadius) {
+          if (x > paddleX && x < paddleX + paddleWidth) {
+            dy = -dy;
+            score++;
+            checkLevelChange();
+          } else {
+            // Game over
+            if (level >= maxLevels || ballTouchBottom) {
+              if (score > highScore) {
+                highScore = score;
+                localStorage.setItem("highScore", highScore);
+                highScoreElement.innerText = highScore;
+              }
+              gameOverText.innerText = "Game Over";
+              newGameButton.innerText = "Start a New Game";
+              gameOverContainer.style.display = "flex";
+              newGameButton.addEventListener("click", startNewGame);
+              return;
             } else {
-                rightPressed = true;
-                leftPressed = false;
+              ballTouchBottom = true;
             }
+          }
         }
 
-        function touchMoveHandler(e) {
-            e.preventDefault();
-            const touchX = e.touches[0].clientX;
-            const canvasRect = canvas.getBoundingClientRect();
-            if (touchX < canvasRect.left + canvas.width / 2) {
-                leftPressed = true;
-                rightPressed = false;
-            } else {
-                rightPressed = true;
-                leftPressed = false;
-            }
+        if (rightPressed && paddleX < canvas.width - paddleWidth) {
+          paddleX += 7;
+        } else if (leftPressed && paddleX > 0) {
+          paddleX -= 7;
         }
 
-        function drawBall() {
-            context.beginPath();
-            context.arc(x, y, ballRadius, 0, Math.PI * 2);
-            context.fillStyle = "#0095DD";
-            context.fill();
-            context.closePath();
+        x += dx;
+        y += dy;
+
+        scoreContainer.innerText = `Level: ${level} Score: ${score}`;
+
+        if (!gamePaused) {
+          requestAnimationFrame(draw);
         }
+      }
 
-        function drawPaddle() {
-            context.beginPath();
-            context.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-            context.fillStyle = "#0095DD";
-            context.fill();
-            context.closePath();
+      function startNewGame() {
+        gameOverContainer.style.display = "none";
+
+        score = 0;
+        level = 1;
+        ballTouchBottom = false;
+        x = canvas.width / 2;
+        y = canvas.height - 30;
+        dx = 4;
+        dy = -4;
+        paddleX = (canvas.width - paddleWidth) / 2;
+        requestAnimationFrame(draw);
+      }
+
+      function checkLevelChange() {
+        for (let i = 0; i < levelThresholds.length; i++) {
+          if (score >= levelThresholds[i] && level < i + 1) {
+            level = i + 1;
+            displayLevelUpMessage();
+          }
         }
+      }
 
-        function draw() {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            drawBall();
-            drawPaddle();
+      function displayLevelUpMessage() {
+        levelUpMessage.style.display = "block";
+        clearTimeout(levelUpDisplayTimeout);
+        levelUpDisplayTimeout = setTimeout(() => {
+          levelUpMessage.style.display = "none";
+        }, 2000);
+      }
 
-            if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-                dx = -dx;
-            }
-            if (y + dy < ballRadius) {
-                dy = -dy;
-            } else if (y + dy > canvas.height - ballRadius) {
-                if (x > paddleX && x < paddleX + paddleWidth) {
-                    dy = -dy;
-                    score++;
-                    checkLevelChange();
-                } else {
-                    // Game over
-                    if (level >= maxLevels || ballTouchBottom) {
-                        if (score > highScore) {
-                            highScore = score;
-                            localStorage.setItem("highScore", highScore);
-                            highScoreElement.innerText = highScore;
-                        }
-                        gameOverText.innerText = "Game Over";
-                        newGameButton.innerText = "Start a New Game";
-                        gameOverContainer.style.display = "flex";
-                        newGameButton.addEventListener("click", startNewGame);
-                        return;
-                    } else {
-                        ballTouchBottom = true;
-                    }
-                }
-            }
+      function pauseGame() {
+        gamePaused = true;
+        pauseButton.style.display = "none";
+        resumeButton.style.display = "block";
+      }
 
-            if (rightPressed && paddleX < canvas.width - paddleWidth) {
-                paddleX += 7;
-            } else if (leftPressed && paddleX > 0) {
-                paddleX -= 7;
-            }
+      function resumeGame() {
+        gamePaused = false;
+        resumeButton.style.display = "none";
+        pauseButton.style.display = "block";
+        requestAnimationFrame(draw);
+      }
 
-            x += dx;
-            y += dy;
-
-            scoreContainer.innerText = `Level: ${level} Score: ${score}`;
-
-            if (!gamePaused) {
-                requestAnimationFrame(draw);
-            }
-        }
-
-        function startNewGame() {
-            gameOverContainer.style.display = "none";
-
-            score = 0;
-            level = 1;
-            ballTouchBottom = false;
-            x = canvas.width / 2;
-            y = canvas.height - 30;
-            dx = 4;
-            dy = -4;
-            paddleX = (canvas.width - paddleWidth) / 2;
-            requestAnimationFrame(draw);
-        }
-
-        function checkLevelChange() {
-            for (let i = 0; i < levelThresholds.length; i++) {
-                if (score >= levelThresholds[i] && level < i + 1) {
-                    level = i + 1;
-                    displayLevelUpMessage();
-                }
-            }
-        }
-
-        function displayLevelUpMessage() {
-            levelUpMessage.style.display = "block";
-            clearTimeout(levelUpDisplayTimeout);
-            levelUpDisplayTimeout = setTimeout(() => {
-                levelUpMessage.style.display = "none";
-            }, 2000);
-        }
-
-        function pauseGame() {
-            gamePaused = true;
-            pauseButton.style.display = "none";
-            resumeButton.style.display = "block";
-        }
-
-        function resumeGame() {
-            gamePaused = false;
-            resumeButton.style.display = "none";
-            pauseButton.style.display = "block";
-            requestAnimationFrame(draw);
-        }
-
-        draw();
+      draw();
     </script>
-    <footer style="text-align: center; background-color: #333; color: #fff; padding: 10px;">
-    &copy; 2023 pong game. All rights reserved. | Designed by <span>Arshad mp</span>
-</footer>
 
-</body>
+    <footer id="footer">
+      copy right &copy;2023 pong game. All rights reserved.
+      Designed by <span>Arshad mp</span>
+    </footer>
+
+  </body>
 </html>
